@@ -1,0 +1,23 @@
+{
+    "env": {
+        "node": true,
+        "commonjs": true,
+        "es6": true
+    },
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+        "indent": ["warn", 4],
+        "linebreak-style": ["warn", "windows"],
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"]
+    }
+}
