@@ -1,6 +1,8 @@
 export {
     Contract,
-    ContractSearcher,
+    ContractSearch,
+    ContractQueryMode,
+    ContractQueryIndex,
     ContractSearchError,
     ContractOrganization,
     ContractSearchOptions,
