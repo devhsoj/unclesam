@@ -1,13 +1,18 @@
 {
   "name": "@devhsoj/unclesam",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Unofficial API for sam.gov",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
-  "keywords": ["government", "api", "typescript", "unofficial"],
+  "keywords": [
+    "government",
+    "api",
+    "typescript",
+    "unofficial"
+  ],
   "author": "Joshua Benfield",
   "license": "MIT",
   "dependencies": {
