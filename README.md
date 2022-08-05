@@ -2,7 +2,6 @@
 unclesam is an unofficial TypeScript API built for querying [sam.gov](https://sam.gov). This package allows you to quickly & easily retrieve government contracts via a modern, typed API.
 
 ## How to install
----
 Requirements: [node/npm](https://nodejs.org/)
 
 ```sh
@@ -11,7 +10,6 @@ npm i @devhsoj/unclesam
 ```
 
 ## Examples
----
 ### Querying active contracts matching all words
 ```ts
 import { ContractSearch, ContractQueryMode } from 'unclesam';
@@ -62,7 +60,6 @@ import { ContractSearch, ContractQueryMode, ContractQueryIndex, ContractSearchSo
 ```
 
 ## About
----
 
 This project was created to get more of an understanding of creating a library in TypeScript :)
 
