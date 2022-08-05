@@ -1,67 +1,23 @@
-import { ApiBaseUrl, buildSamApiUrl } from '../../utils/url';
 import axios from 'axios';
 
-export enum ContractSearchSortOptions {
-    titleAsc = 'title',
-    titleDesc = '-title',
-    moreRelevant = '-relevance',
-    lessRelevant = 'relevance',
-    alNumberAsc = 'programNumber',
-    alNumberDesc = '-programNumber',
-    dateModifiedAsc = 'modifiedDate',
-    dateModifiedDesc = '-modifiedDate'
-}
+import { ApiBaseUrl, buildSamApiUrl } from '../../utils/url';
 
-export type ContractAssistanceTypeRecord = {
-    elementId: string
-    code: string
-    level: number
-    value: string
-}
+import {
+    Contract,
+    ContractQueryMode,
+    ContractQueryIndex,
+    ContractSearchError,
+    ContractSearchOptions, 
+    ContractSearchResponse,
+    ContractSearchSortOptions,
+    ContractSearchApiPaginationData,
+    ContractAssistanceTypeRecord,
+    ContractAssistantType,
+    ContractHistoricalRecord,
+    ContractOrganization
+} from './types';
 
-export type ContractAssistantType = {
-    hierarchy: ContractAssistanceTypeRecord[]
-}
-
-export type ContractHistoricalRecord = {
-    organizationId: string
-    actionType: string
-    createdDate: Date
-    isManual: boolean
-    index: number
-    historicalIndexId: string
-    body: string
-    fiscalYear: number
-    statusCode: string
-}
-
-export type ContractOrganization = {
-    organizationId: string
-    level: number
-    name: string
-    status: string
-}
-
-export type Contract = {
-    _id: string
-    _rScore: number
-    _type: string
-    fhNames: null
-    isActive: boolean
-    isFunded: boolean
-    isCanceled: boolean
-    publishDate: Date
-    modifiedDate: Date
-    title: string
-    objective: string
-    descriptions: string[]
-    programNumber: string
-    organizationHierarchy: ContractOrganization[]
-    historicalIndex: ContractHistoricalRecord[]
-    assistanceTypes: ContractAssistantType[]
-}
-
-export type ContractSearchApiResponse = {
+type ContractSearchApiResponse = {
     _embedded?: {
         results: Contract[]
     }
@@ -71,60 +27,7 @@ export type ContractSearchApiResponse = {
             templated: boolean
         }
     }
-    page: {
-        size: number
-        totalElements: number
-        totalPages: number
-        number: number
-        maxAllowedRecords: number
-    }
-}
-
-export type ContractSearchError = {
-    timestamp: Date
-    status: number
-    error: string
-    path: string
-}
-
-export type ContractSearchResponse = {
-    contracts?: Contract[]
-    error?: ContractSearchError
-}
-
-export type ContractSearchOptions = {
-    page?: number
-    pageSize?: number
-    query: string
-    queryMode: ContractQueryMode
-    index?: ContractQueryIndex
-    active?: boolean
-    sort?: ContractSearchSortOptions
-    organizationId?: string
-}
-
-/**
- * Query mode for querying contracts.
- */
-export enum ContractQueryMode {
-    /** Search results will contain one, some, or all keywords entered. */
-    ANY = 'ANY',
-    /** Search results will contain all keywords entered. */
-    ALL = 'ALL',
-    /** Search results will contain the EXACT PHRASE from the keyword search. */
-    EXACT = 'EXACT'
-}
-
-/**
- * Index to use for querying contracts.
- */
-export enum ContractQueryIndex {
-    /** Search results will contain all contracts. */
-    All = '_all',
-    /** Search results will contain only "Opportunities" */
-    Opportunities = 'opp',
-    /** Search results will contain only "Assitance Listings" */
-    AssistanceListings = 'cfda'
+    page: ContractSearchApiPaginationData
 }
 
 type ContractSearchQuery = {
@@ -183,10 +86,40 @@ export class ContractSearch {
         }
     }
 
+    public async list(contracts?: Contract[]):Promise<Contract[]> {
+        try {
+            let res: ContractSearchResponse;
+
+            if (!contracts) {
+                res = await this.currentPage();
+                contracts = res.contracts ?? [];
+            }
+
+            res = await this.nextPage();
+
+            if (res.contracts) {
+                const list = contracts.concat(res.contracts);
+
+                if (res.paging) {
+                    if (list.length >= res.paging.totalElements) {
+                        return Promise.resolve(list);
+                    }
+                }
+
+                return this.list(list);
+            }
+
+            return Promise.resolve(contracts);
+        } catch (err) {
+            return Promise.reject(err);
+        }
+    }
+
     public static async search(options: ContractSearchOptions):Promise<ContractSearchResponse> {
         try {
             if (options.page === undefined) options.page = 0;
             if (options.pageSize === undefined) options.pageSize = 25;
+            if (options.query instanceof Array) options.query = options.query.join(' ');
 
             const query: ContractSearchQuery = {
                 page: options.page.toString(),
@@ -205,20 +138,34 @@ export class ContractSearch {
                 { validateStatus: null }
             );
     
-            const data: ContractSearchResponse = {};
-            const samData = (<ContractSearchApiResponse> res.data);
+            const contractSearchData: ContractSearchResponse = {
+                paging: {
+                    size: 0,
+                    totalElements: 0,
+                    totalPages: 0,
+                    number: 0,
+                    maxAllowedRecords: 0,
+                }
+            };
+
+            const samApiData = <ContractSearchApiResponse> res.data;
 
             if (res.status === 200) {
-                if (!samData?._embedded) {
-                    data.contracts = [];
+                if (!samApiData?._embedded) {
+                    contractSearchData.contracts = [];
                 } else {
-                    data.contracts = samData._embedded.results;
+                    contractSearchData.contracts = samApiData._embedded.results;
                 }
+
+                if (samApiData.page.totalElements !== 0) {
+                    contractSearchData.paging = samApiData.page;
+                }
+
             } else {
-                data.error = <ContractSearchError> res.data;
+                contractSearchData.error = <ContractSearchError> res.data;
             }
     
-            return Promise.resolve(data);
+            return Promise.resolve(contractSearchData);
         } catch (err) {
             return Promise.reject(err);
         }

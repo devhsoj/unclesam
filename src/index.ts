@@ -1,15 +1,18 @@
 export {
     Contract,
-    ContractSearch,
     ContractQueryMode,
     ContractQueryIndex,
     ContractSearchError,
     ContractOrganization,
-    ContractSearchOptions,
     ContractAssistantType,
+    ContractSearchOptions,
     ContractSearchResponse,
     ContractHistoricalRecord,
     ContractSearchSortOptions,
-    ContractSearchApiResponse,
     ContractAssistanceTypeRecord,
+    ContractSearchApiPaginationData,
+} from './api/contract/types';
+
+export {
+    ContractSearch
 } from './api/contract';
