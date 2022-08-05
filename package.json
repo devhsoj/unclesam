@@ -7,7 +7,7 @@
   "files": [
     "dist/"
   ],
-  "keywords": [],
+  "keywords": ["government", "api", "typescript", "unofficial"],
   "author": "Joshua Benfield",
   "license": "MIT",
   "dependencies": {
