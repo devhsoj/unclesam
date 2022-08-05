@@ -10,11 +10,7 @@ import {
     ContractSearchOptions, 
     ContractSearchResponse,
     ContractSearchSortOptions,
-    ContractSearchApiPaginationData,
-    ContractAssistanceTypeRecord,
-    ContractAssistantType,
-    ContractHistoricalRecord,
-    ContractOrganization
+    ContractSearchApiPaginationData
 } from './types';
 
 type ContractSearchApiResponse = {
