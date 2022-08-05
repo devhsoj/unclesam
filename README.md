@@ -7,7 +7,7 @@ Requirements: [node/npm](https://nodejs.org/)
 
 ```sh
 cd my_project/
-npm i unclesam
+npm i @devhsoj/unclesam
 ```
 
 ## Examples

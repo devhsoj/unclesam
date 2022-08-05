@@ -1,5 +1,5 @@
 {
-  "name": "unclesam",
+  "name": "@devhsoj/unclesam",
   "version": "0.0.1",
   "description": "Unofficial API for sam.gov",
   "main": "dist/index.js",
