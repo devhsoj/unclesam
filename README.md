@@ -5,7 +5,6 @@ unclesam is an unofficial TypeScript API built for querying [sam.gov](https://sa
 Requirements: [node/npm](https://nodejs.org/)
 
 ```sh
-cd my_project/
 npm i @devhsoj/unclesam
 ```
 
