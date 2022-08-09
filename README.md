@@ -17,24 +17,23 @@ import { ContractSearch, ContractQueryMode } from 'unclesam';
     const search = new ContractSearch({
         query: ['software', 'network'],
         queryMode: ContractQueryMode.ALL,
-        pageSize: 1000,
         active: true
     });
 
-    // .list() goes through each page recursively (in this case, 1000 records at a time) and returns all contracts
+    // .list() goes through each page recursively (by default, 1000 records at a time) and returns an array of Contract objects
     const contracts = await search.list();
 
     console.log(contracts); // [{ title: 'Example Title', ... }]
 })();
 ```
 
-### Explicitly retrieve the ten most recently modified contract opportunities containing the word 'defense'
+### With pagination, retrieve the ten most recently modified contract opportunities containing the word 'defense'
 
 ```ts
 import { ContractSearch, ContractQueryMode, ContractQueryIndex, ContractSearchSortOptions } from 'unclesam';
 
 (async () => {
-    // Using the static class method .search() on ContractSearch, allows you to directly search contracts
+    // Using the static class method .search() on ContractSearch, allows you to directly interface with the sam.gov paginated API
     const res = await ContractSearch.search({
         page: 0,
         pageSize: 10,
@@ -61,5 +60,3 @@ import { ContractSearch, ContractQueryMode, ContractQueryIndex, ContractSearchSo
 ## About
 
 This project was created to get more of an understanding of creating a library in TypeScript :)
-
-*Plus I like reverse-engineering APIs*
