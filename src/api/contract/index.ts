@@ -49,9 +49,10 @@ export class ContractSearch {
     }
 
     public async nextPage(pageSize?: number):Promise<ContractSearchResponse> {
+        if (this.options.page !== undefined) this.options.page++;
+
         const options = { ...this.options };
 
-        if (this.options.page !== undefined) this.options.page++;
         if (pageSize) options.pageSize = pageSize;
 
         const res = await ContractSearch.search(options);
@@ -70,9 +71,10 @@ export class ContractSearch {
     }
 
     public async prevPage(pageSize?: number):Promise<ContractSearchResponse> {
+        if (this.options.page !== undefined) this.options.page--;
+
         const options = { ...this.options };
 
-        if (this.options.page !== undefined) this.options.page--;
         if (pageSize) options.pageSize = pageSize;
 
         const res = await ContractSearch.search(options);
@@ -101,6 +103,8 @@ export class ContractSearch {
 
             return this.list(list);
         }
+
+        this.options.page = 0;
 
         return contracts;
     }
